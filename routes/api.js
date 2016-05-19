@@ -4,7 +4,8 @@ var Database = require('../db');
 var conn = new Database();
 
 router.get('/summary', function(req, res, next){
-  const { start, end } = req.query;
+  const start = req.query.start;
+  const end = req.query.end;
   new Promise(
     (resolve, reject) => {
       conn.getIncomeByMonth(start, end, function(result){
@@ -52,7 +53,8 @@ router.get('/all', function(req, res, next){
   });
 });
 router.post('/income', function(req, res, next){
-  const { amount, currency } = req.body;
+  const amount = req.body.amount;
+  const currency = req.body.currency;
   if(!isNaN(amount)){
     conn.addIncome(amount, currency, function(){
       res.json({
@@ -68,7 +70,9 @@ router.post('/income', function(req, res, next){
 });
 
 router.post('/outlay', function(req, res, next){
-  const { amount, title, currency } = req.body;
+  const amount = req.body.amount;
+  const title = req.body.title;
+  const currency = req.body.currency;
   if(!isNaN(amount) && (title.trim()).length != 0){
     conn.addOutlay(amount, title, currency, function(){
       res.json({
