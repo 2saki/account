@@ -5,6 +5,8 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
+var passport = require('passport');
 
 var routes = require('./routes/index');
 var api = require('./routes/api');
@@ -23,6 +25,18 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'wahaha account',
+  resave: false,
+  saveUninitialized:true,
+  cookie:{
+    secure: false,
+    maxAge : 360000 // one hour in millis
+  }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+require('./passport.config')(passport);
 
 app.use('/', routes);
 app.use('/api', api);

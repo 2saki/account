@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import moment from 'moment'
-import fetch from 'isomorphic-fetch';
 
 const MONTH_FORMAT = 'YYYY-MM';
 var totalCombine = {};

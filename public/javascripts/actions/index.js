@@ -15,6 +15,58 @@ const getRate = (res, dispatch, callback) => {
   })
 }
 const Action = {
+  loginUser: (req) => {
+    const { email, password } = req;
+    var data = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        email: email,
+        password: password
+      })
+    };
+    return {
+      url: '/api/users/login',
+      data: data,
+      callback: (res, dispatch) => {
+        dispatch({
+          type: "LOGIN_USER",
+          data: res
+        })
+      }
+    }
+  },
+  createUser: (req) => {
+    const { email, username, password, confirm_password } = req;
+    var data = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({
+        email: email,
+        username: username,
+        password: password,
+        confirm_password: confirm_password
+      })
+    };
+    return {
+      url: '/api/users/register',
+      data: data,
+      callback: (res, dispatch) => {
+        dispatch({
+          type: "LOGIN_USER",
+          data: res
+        })
+      }
+    }
+  },
   getAll: () => {
     var lastUpdate = '';
     if(localStorage.getItem('lastUpdate')){
@@ -46,6 +98,7 @@ const Action = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
+      credentials: 'same-origin',
       body: JSON.stringify({
         amount: amount,
         currency: currency
@@ -75,6 +128,7 @@ const Action = {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
+      credentials: 'same-origin',
       body: JSON.stringify({
         amount: amount,
         title: title,
@@ -110,19 +164,20 @@ export const fetchRequest = (req, cb) => {
     return fetch(url, data)
     .then(function(res){
       if(res.status === 200)
-        return res.text();
+        return res.json();
       else
         sweetAlert("Oops...", "network error!", "error");
     })
     .then(function(data){
-      const result = JSON.parse(data);
+      const result = data;
       if(result.status == "success"){
         localStorage.setItem('lastUpdate', moment().toString())
         callback(result, dispatch);
-        if(cb) cb();
+        if(cb) cb(result);
       }
       else {
-        sweetAlert("Oops...", "database error!", "error");
+        const message = result.message || "database error!";
+        sweetAlert("Oops...", message, "error");
       }
     });
   }
