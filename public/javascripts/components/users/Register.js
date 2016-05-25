@@ -44,10 +44,11 @@ class Register extends React.Component {
             });
             break;
           case 'success':
-            var member = res.member;
+            var member = res.user;
             var user = {
               memberId:member._id,
               username: member.username,
+              email: member.email,
               fb_id: member.fb_id
             };
             localStorage.setItem("user", JSON.stringify(user));
@@ -75,8 +76,9 @@ class Register extends React.Component {
     })
   }
   render () {
+    let loading = this.props.user.isFetching ? ' loading':'';
     return (
-      <div className="ui segment">
+      <div className={"ui segment" + loading}>
         <form className="ui form" ref="form">
           <div className="field">
             <label>Email</label>

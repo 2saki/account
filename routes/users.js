@@ -3,7 +3,11 @@ var express = require('express');
 var router = express.Router();
 
 /* GET users listing. */
-router.get('/*', function(req, res, next) {
+router.get('/logout', (req, res, next) => {
+  req.logout();
+  res.redirect('/users/login');
+});
+router.get('/*', (req, res, next) => {
   if(req.isAuthenticated()){
     res.redirect('/');
   }

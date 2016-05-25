@@ -77,10 +77,22 @@ class Database {
       password: password,
       fb_id: fb_id
     });
-    member.save((err, member) => {
+    Members.update({
+      email: email
+    },
+    {
+      $setOnInsert: member
+    },
+    {
+      upsert: true
+    }, (err, member) => {
       assert.equal(null, err);
       cb(member);
     });
+    // member.save((err, member) => {
+    //   assert.equal(null, err);
+    //   cb(member);
+    // });
   }
   getAllIncome(cb){
     Incomes.find((err, doc) => {

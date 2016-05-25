@@ -67,8 +67,9 @@ class Login extends React.Component {
     })
   }
   render () {
+    let loading = this.props.user.isFetching ? ' loading':'';
     return (
-      <div className="ui segment">
+      <div className={"ui segment" + loading}>
         <form className="ui form" ref="form">
           <div className="field">
             <label>Email</label>

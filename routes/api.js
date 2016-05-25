@@ -68,16 +68,35 @@ router.post('/users/register', (req, res, next) => {
   }
   else {
     const encrypt = crypto.createHash('sha256').update(password+email).digest('hex');
-    conn.createUser({
+    const userInfo = {
       email: email,
       username: username,
       password: encrypt,
       fb_id: "",
-    }, (member) => {
-      res.json({
-        status: 'success',
-        member: member
-      });
+    };
+    conn.createUser(userInfo, (member) => {
+      if(member.upserted){
+        var user = Object.assign({}, userInfo);
+        user._id = member.upserted[0]._id;
+        delete user.password;
+        req.login(user, (err) => {
+          return res.json({
+            status: 'success',
+            user: {
+              email: req.user.email,
+              username: req.user.username,
+              fb_id: req.user.fb_id,
+              memberId: req.user._id
+            }
+          });
+        });
+      }
+      else {
+        res.json({
+          status: 'failed',
+          message: 'Email have already registered'
+        });
+      }
     });
     return;
   }
